@@ -1,3 +1,7 @@
+Okay, so here we are trying to make a B+ Tree.
+
+
+
 The testhw and the Testing directory are now available for use.
 Copy testhw to one of your own directories.
 There is no need to copy the Testing directory.
