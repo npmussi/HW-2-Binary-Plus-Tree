@@ -24,29 +24,29 @@ int LeafNode::getMinimum()const
 } // LeafNode::getMinimum()
 
 
-LeafNode* LeafNode::insert(int value)
+LeafNode* LeafNode::insert(int value) //Well, at least we're guaranteed to try to insert stuff...
 {
-  /* this method will insert the value into the values array
-     keeping it sorted.
-	DOES NOT CHECK IF IT IS FULL, COME HERE ON CONDITION THAT
-	VALUES IS NOT FULL
-  */
+	if (count != leafSize)
+	{
+		unsigned int elem_num = count;
+		while (0 < elem_num && value < values[elem_num-1])
+		{ //While our inserted value is less than every number.
+		values[elem_num] = values[--elem_num]; //Set next element in array to be previous value.
+		}
+		values[elem_num] = value;
+		++count;
+		return NULL; // to avoid warnings for now.
+	}
+	else if (NULL == this->leftSibling || NULL == this->rightSibling) 
+	{
+		return this;
+	}
 
-   for(int i = 0; i < count; ++i){
-      if(value < values[i]){
-         //upon reaching this point, move everything down by one and place item in
-			for(int j = count; j > i; ++j){
-				values[j] = values[j-1];
-			}
-			values[i] = value;
-      }
-   }
-  return this;
 }  // LeafNode::insert()
 
 void LeafNode::print(Queue <BTreeNode*> &queue)
 {
-  cout << "Leaf: ";
+  cout <<"Leaf: ";
   for (int i = 0; i < count; i++)
     cout << values[i] << ' ';
   cout << endl;
