@@ -26,8 +26,22 @@ int LeafNode::getMinimum()const
 
 LeafNode* LeafNode::insert(int value)
 {
-  // students must write this
-  return NULL; // to avoid warnings for now.
+  /* this method will insert the value into the values array
+     keeping it sorted.
+	DOES NOT CHECK IF IT IS FULL, COME HERE ON CONDITION THAT
+	VALUES IS NOT FULL
+  */
+
+   for(int i = 0; i < count; ++i){
+      if(value < values[i]){
+         //upon reaching this point, move everything down by one and place item in
+			for(int j = count; j > i; ++j){
+				values[j] = values[j-1];
+			}
+			values[i] = value;
+      }
+   }
+  return this;
 }  // LeafNode::insert()
 
 void LeafNode::print(Queue <BTreeNode*> &queue)
