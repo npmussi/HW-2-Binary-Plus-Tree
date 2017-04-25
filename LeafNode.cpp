@@ -35,6 +35,7 @@ LeafNode* LeafNode::insert(int value)
 	}
 	else if (NULL != this->rightSibling && this->rightSibling->getCount() < leafSize)//rightSib exists, not full
 	{ //insert into the right sibling
+std::cout<< "me shift right!!" <<std::endl;
 		insertRight(value);
 	}
 	else //Left and right full/don't exist, so we make a new parent node.
@@ -80,15 +81,20 @@ void LeafNode::insertLeft(int value)
 void LeafNode::insertRight(int value)
 {
     //this method will insert the value into the right sibling
-	this->rightSibling->insert(this->values[count--]);  //Well, we just don't care about the last element.
+	this->rightSibling->insert(this->values[--count]);  //Well, we just don't care about the last element.
 	this->insert(value);
+	
 }
 
 LeafNode* LeafNode::insertSplit(int value)
 {
-	    LeafNode *new_leaf = new LeafNode(leafSize, this->parent, this, NULL);
+	    LeafNode *new_leaf = new LeafNode(leafSize, this->parent, this, this->getRightSibling());
 	    unsigned int starting_index;
 	    this->setRightSibling(new_leaf);
+	    if(this->rightSibling != NULL){
+	        //I must make the old right sibling know who his new left is
+		this->rightSibling->setLeftSibling(new_leaf);
+	    }
 	    if (value < this->values[leafSize/2])//Compare value to middle.
 	    {
 	        starting_index = (leafSize-1)/2;//If less than middle (insert left), shift more elems right.
@@ -97,6 +103,7 @@ LeafNode* LeafNode::insertSplit(int value)
 	    {
 	        starting_index = (leafSize+1)/2;//If more than middle (insert right), shift less elem right
 	    }
+std::cout << "in splitinsert, starting_index: " << starting_index << " leafSize: " << leafSize<< std::endl;
 	    for (unsigned int elem_num = starting_index; elem_num < leafSize; elem_num++)//The +1 guarantees that if count is odd, one more element is in the left sibling.
 	    {
 	        new_leaf->insert(this->values[elem_num]); //Put our elements in the new leaf node.
@@ -111,5 +118,4 @@ LeafNode* LeafNode::insertSplit(int value)
 	        new_leaf->insert(value);
 	    }
 	    return this; //If we return a leaf pointer, that means we need a new parent in every case.
-	}
 }

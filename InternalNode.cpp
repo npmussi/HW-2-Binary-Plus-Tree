@@ -28,23 +28,31 @@ InternalNode* InternalNode::insert(int value)
         creates keys[0] and insert*/
     //FIXME What is this is an InternalNode with a bunch of LeafNodes in regards to the return?
     //^ it will be a recursive function, recursively call insert(int) until the child is a leaf
+
     if(count < internalSize){
         BTreeNode *returned_node = NULL;
         int& num_keys = count;
         for(unsigned int index_num = 0; index_num < num_keys-1; ++index_num){ //Compare the inserted value to the keys.
-            std::cout<<"Value is "<<value<<". Keys at index 0 is "<<keys[0]<<" Count is"<<count<<" Index_num is "<<index_num<<std::endl;
+            std::cout<<"hehe XD!! Value is "<<value<<". Keys at index "<< index_num << " is "<<keys[index_num]<<" Count is"<<count<<std::endl;
             if(value < keys[index_num+1]){//Is the value less than minimum of node to right?
-                returned_node = children[index_num]->insert(value);//Insert value at left of key.
-                keys[index_num] = children[index_num]->getMinimum();//Update key of this index number.
+                returned_node = children[index_num]->insert(value);//Insert value at left of key.                
+		keys[index_num] = children[index_num]->getMinimum();//Update key of this index number.
+		keys[index_num + 1] = children[index_num+1]->getMinimum(); //update the key of the next one in case of right shift
                 if(returned_node != NULL){ //Did this node split?
                     unsigned int back_index = count - 1;//If so, we move every single node right.
                     while (back_index > index_num)
                     {
-                        children[back_index] = children[--back_index]; //Move right!
-                        SET LEFT AND RIGHT SIBLI- wait, nevermind, they're all the same still.
+std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::endl;
+                        children[back_index + 1] = children[back_index]; //Move right!
+			keys[back_index + 1] = children[back_index]->getMinimum();
+			back_index--; // we should decrement here because I have to change keys array
+                        this->count++;
+			// SET LEFT AND RIGHT SIBLI- wait, nevermind, they're all the same still.
                     }
-                    children[index_num] = returned_node->getRightSibling(); 
-                    
+                    children[index_num] = returned_node; 
+                    keys[index_num] = returned_node->getMinimum();
+		    children[index_num + 1] = returned_node->getRightSibling();
+		    keys[index_num + 1] = returned_node->getRightSibling()->getMinimum();
                 }
                 return NULL;
             }
@@ -52,11 +60,12 @@ InternalNode* InternalNode::insert(int value)
         }
         //Just have children[count] = returned_node and update key.
         std::cout<<"Value is "<<value<<". Keys at index 0 is "<<keys[0]<<" Count is"<<count<<std::endl;
-        std::cout<<"Seg faulting.";
         returned_node = children[count-1]->insert(value);
+	keys[count - 1] = children[count - 1]->getMinimum();
         if (returned_node != NULL)
         {
-            keys[num_keys] = returned_node->getMinimum();
+std::cout << "we in there" << std::endl;
+            keys[num_keys] = returned_node->getRightSibling()->getMinimum();
             children[count++] = returned_node->getRightSibling(); 
         }
         //if we got out here, then you need to insert into the last child
