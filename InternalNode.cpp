@@ -21,6 +21,9 @@ int InternalNode::getMinimum()const
 
 //FIXME: 1. Look for updating left and right sibling keys (in case of putting values into left and right siblings)
 //    ^^ NEED TO MAKE SURE IT UPDATES FOR ALL CASES, ex. BTree12.dat 2 2 will break because it goes sends child right, and doesn't update
+//FIXME: 2. somehow there was an empty internal node in the final answer, the rest of the internals were also screwed up
+// 	 ^^ make sure that parent / child pointers are right
+
 InternalNode* InternalNode::insert(int value)
 {
     /*this function will find the correct next node to go to
@@ -82,10 +85,12 @@ InternalNode* InternalNode::insert(int value)
 			if(value < keys[i + 1]){
 				returned_node = children[i]->insert(value);
 				keys[i] = children[i]->getMinimum();
+cout << "right before" <<endl;
+				keys[i + 1] = children[i + 1]->getMinimum(); //update the right in case of right send
 	if(children[i]->getLeftSibling() != NULL){ // FIXME: this doesn't always work, you still have a left sibling at children[0] (if you're a right sibling of someone else)
-		keys[i - 1] = children[i]->getLeftSibling()->getMinimum();
+		keys[i - 1] = children[i]->getLeftSibling()->getMinimum(); //THIS WILL SEG FAULT if you have a left sibling and are the first item in children
 	}
-	if(children[i]->getRightSibling() != NULL){ //maybe ^^^ is actually ok because y ou can send your node to the left sibling even under a different parent
+	if(children[i]->getRightSibling() != NULL){ // FIXME: DANGER SEG FAULT IN WAITING HERE
 		keys[i + 1] = children[i]->getRightSibling()->getMinimum();
 	}
 				if(returned_node != NULL){
@@ -204,7 +209,15 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
                 new_internal->insert(this->children[elem_num]); //Put our elements in the new internal node
                 count--;//We now have less.
             }
-			new_internal->insert(returned_node->getRightSibling());//because the internal node only splits when there is one too many leaves
+			if(returned_node->getRightSibling()->getMinimum() < new_internal->children[0]->getMinimum()){
+				this->insert(returned_node->getRightSibling());//WATCH OUT FOR SIBLING POINTER
+			}
+			else{
+				new_internal->insert(returned_node->getRightSibling());//because the internal node only splits when there is one too many leaves
+			}
+
+			new_internal->children[0]->getLeftSibling()->setRightSibling(NULL);
+			new_internal->children[0]->setLeftSibling(NULL);
 			//THIS WILL ALWAYS APPLY: there will always be a leaf that is past the old "max"  
             return this; //If we return a pointer to an internal node, that means we need a new parent in every case.
 }
