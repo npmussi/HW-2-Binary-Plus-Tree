@@ -27,6 +27,7 @@ LeafNode* LeafNode::insert(int value)
 {
 	if (count != leafSize) 
 	{ //inserts into the leaf regularly
+//cout << "leaf reg insert" << endl;
 		regularInsert(value);
 	}
 	else if (NULL != this->leftSibling && this->leftSibling->getCount() < leafSize)//leftSib exists, not full
@@ -87,6 +88,7 @@ void LeafNode::insertRight(int value)
 
 LeafNode* LeafNode::insertSplit(int value)
 {
+//cout <<  "leaf split " << endl;
 	    LeafNode *new_leaf = new LeafNode(leafSize, this->parent, this, this->getRightSibling());
 	    unsigned int starting_index;
 	    if(this->rightSibling != NULL){
@@ -116,4 +118,12 @@ LeafNode* LeafNode::insertSplit(int value)
 	        new_leaf->insert(value);
 	    }
 	    return this; //If we return a leaf pointer, that means we need a new parent in every case.
+}
+
+bool LeafNode::isFull(){
+	//this method will check if the leaf is full or not
+	if(this->count == leafSize){
+		return true;
+	}
+	return false;
 }

@@ -10,8 +10,10 @@ private:
   BTreeNode **children;
   int *keys;
   
-  InternalNode* insertSplit(int value);
-  
+  void insertLeft(int value);
+  void insertRight(int value);
+  InternalNode* insertSplit(BTreeNode* returned_node);
+  bool isFull();
 public:
   InternalNode(int ISize, int LSize, InternalNode *p,
     BTreeNode *left, BTreeNode *right);

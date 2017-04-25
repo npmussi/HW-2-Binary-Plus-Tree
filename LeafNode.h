@@ -12,6 +12,7 @@ private:
   void insertLeft(int value); // inserts to left sibling
   void insertRight(int value); //inserts to right sibling
   LeafNode* insertSplit(int value); //Splits on insert
+  bool isFull();//checks if the leaf is full
 public:
   LeafNode(int LSize, InternalNode *p, BTreeNode *left,
     BTreeNode *right);
