@@ -42,13 +42,13 @@ InternalNode* InternalNode::insert(int value)
                     unsigned int back_index = count - 1;//If so, we move every single node right.
                     while (back_index > index_num)
                     {
-//std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::endl;
+			//std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::endl;
                         children[back_index + 1] = children[back_index]; //Move right!
 			keys[back_index + 1] = children[back_index]->getMinimum();
-			back_index--; // we should decrement here because I have to change keys array
-                        this->count++;
+			back_index--; // we should decrement here because I have to change keys array                    
 			// SET LEFT AND RIGHT SIBLI- wait, nevermind, they're all the same still.
                     }
+		    this->count++;
                     children[index_num] = returned_node; 
                     keys[index_num] = returned_node->getMinimum();
 		    children[index_num + 1] = returned_node->getRightSibling();
