@@ -20,8 +20,7 @@ int InternalNode::getMinimum()const
 
 
 //FIXME: 1. Look for updating left and right sibling keys (in case of putting values into left and right siblings)
-//FIXME: 2. Inserts 12 at the end, 12 eats 11 instead of splitting
-
+//    ^^ could be sketchy, but I actually think it works
 InternalNode* InternalNode::insert(int value)
 {
     /*this function will find the correct next node to go to
@@ -62,17 +61,15 @@ InternalNode* InternalNode::insert(int value)
             
         }
 		returned_node = children[count - 1]->insert(value);
-cout << "I just made a returned" << count <<endl;
 		keys[count - 1] = children[count - 1]->getMinimum();
 		if(returned_node != NULL){
-cout << "im in the if" << endl;
 			keys[num_keys] = returned_node->getRightSibling()->getMinimum();
 			children[count++] = returned_node->getRightSibling();
 		}  
 		return NULL;
     }
     else{
-	//in this case, count == intermalSize, but this doesn't mean that we need to look to siblings yet
+	//in this case, count == internalSize, but this doesn't mean that we need to look to siblings yet
 	//we only should start looking to siblings when the leaf splits
 	//go through the children array, check children near the value being inserted
 		BTreeNode* returned_node = NULL;
@@ -83,7 +80,7 @@ cout << "im in the if" << endl;
 	if(children[i]->getLeftSibling() != NULL){ // FIXME: this doesn't always work, you still have a left sibling at children[0] (if you're a right sibling of someone else)
 		keys[i - 1] = children[i - 1]->getMinimum();
 	}
-	if(children[i]->getRightSibling() != NULL){ //FIXME: SAME AS ABOVE
+	if(children[i]->getRightSibling() != NULL){ //maybe ^^^ is actually ok because y ou can send your node to the left sibling even under a different parent
 		keys[i + 1] = children[i + 1]->getMinimum();
 	}
 				if(returned_node != NULL){
@@ -91,11 +88,11 @@ cout << "im in the if" << endl;
 					
 					if (NULL != this->leftSibling && this->leftSibling->getCount() < internalSize)//leftSib exists, not full
 	    			{ //insert into the left sibling
-	        			    insertLeft(value);
+	        			    insertLeft(returned_node);
 	    			}
 	    			else if (NULL != this->rightSibling && this->rightSibling->getCount() < internalSize)//rightSib exists, not full
 	    			{ //insert into the right sibling
-	    			        insertRight(value);
+	    			        insertRight(returned_node);
 	    			}
 	    			else{ //I must split
 cout<< "im in split in for"<<endl;
@@ -106,19 +103,20 @@ cout<< "im in split in for"<<endl;
 			}
 		}
 		//if you got out here, that means that we need to insert into the last child
-cout << "countAAAAA: " << count << endl;
 		returned_node = children[count - 1]->insert(value);
-		keys[count - 1] = children[count - 1]->getMinimum();
+		keys[count - 1] = children[count - 1]->getMinimum(); //TODO Update keys[count - 2] to acccount for sending to left sibling
+//BREAK MEEEE!
+
 		if(returned_node != NULL){
 			//I must look to my siblings
 			
 			if (NULL != this->leftSibling && this->leftSibling->getCount() < internalSize)//leftSib exists, not full
 	    	{ //insert into the left sibling
-	        	    insertLeft(value);
+	        	    insertLeft(returned_node);
 	    	}
 	    	else if (NULL != this->rightSibling && this->rightSibling->getCount() < internalSize)//rightSib exists, not full
 	    	{ //insert into the right sibling
-	    	        insertRight(value);
+	    	        insertRight(returned_node);
 	    	}
 	    	else{ //I must split
 cout<< "im in split out for"<<endl;
@@ -212,24 +210,24 @@ cout << "moving time, start: " << starting_index << "elem_num: " << elem_num << 
 }
 
 
-void InternalNode::insertLeft(int value)
+void InternalNode::insertLeft(BTreeNode* returned_node)
 {
    //this method will insert the value into the left sibling
-        ((InternalNode*)(this->leftSibling))->insert(this->children[0]); //Insert minimum into left sibling.
+        ((InternalNode*)(this->leftSibling))->insert(this->children[0]); //Insert first into left sibling.
         for (unsigned int elem_num = 0; elem_num < count - 1; elem_num++)
         {//Shift all elements to the left.
             children[elem_num] = children[elem_num + 1];
-	    keys[elem_num] = keys[elem_num + 1];
+	   		keys[elem_num] = keys[elem_num + 1];
         }
         count--; //We lost an element, basically.
-        this->insert(value); //Insert element into now-non-empty leafNode.
+        this->insert(returned_node->getRightSibling()); //Insert element into now-non-empty leafNode.
 }
 
-void InternalNode::insertRight(int value)
+void InternalNode::insertRight(BTreeNode* returned_node)
 {
    //this method will insert the child into the right sibling
         ((InternalNode*)(this->rightSibling))->insert(this->children[--count]);  //Well, we just don't care about the last element.
-        this->insert(value);
+        this->insert(returned_node->getRightSibling());
 }
 
 bool InternalNode::isFull(){
