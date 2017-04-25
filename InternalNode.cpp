@@ -33,7 +33,7 @@ InternalNode* InternalNode::insert(int value)
         BTreeNode *returned_node = NULL;
         int& num_keys = count;
         for(unsigned int index_num = 0; index_num < num_keys-1; ++index_num){ //Compare the inserted value to the keys.
-            std::cout<<"hehe XD!! Value is "<<value<<". Keys at index "<< index_num << " is "<<keys[index_num]<<" Count is"<<count<<std::endl;
+//            std::cout<<"hehe XD!! Value is "<<value<<". Keys at index "<< index_num << " is "<<keys[index_num]<<" Count is"<<count<<std::endl;
             if(value < keys[index_num+1]){//Is the value less than minimum of node to right?
                 returned_node = children[index_num]->insert(value);//Insert value at left of key.                
 		keys[index_num] = children[index_num]->getMinimum();//Update key of this index number.
@@ -42,7 +42,7 @@ InternalNode* InternalNode::insert(int value)
                     unsigned int back_index = count - 1;//If so, we move every single node right.
                     while (back_index > index_num)
                     {
-std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::endl;
+//std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::endl;
                         children[back_index + 1] = children[back_index]; //Move right!
 			keys[back_index + 1] = children[back_index]->getMinimum();
 			back_index--; // we should decrement here because I have to change keys array
@@ -59,12 +59,11 @@ std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::e
             
         }
         //Just have children[count] = returned_node and update key.
-        std::cout<<"Value is "<<value<<". Keys at index 0 is "<<keys[0]<<" Count is"<<count<<std::endl;
+//        std::cout<<"Value is "<<value<<". Keys at index 0 is "<<keys[0]<<" Count is"<<count<<std::endl;
         returned_node = children[count-1]->insert(value);
 	keys[count - 1] = children[count - 1]->getMinimum();
         if (returned_node != NULL)
         {
-std::cout << "we in there" << std::endl;
             keys[num_keys] = returned_node->getRightSibling()->getMinimum();
             children[count++] = returned_node->getRightSibling(); 
         }
@@ -142,7 +141,7 @@ void InternalNode::print(Queue <BTreeNode*> &queue)
   cout << "Internal: ";
   for (i = 0; i < count; i++)
     cout << keys[i] << ' ';
-  cout << endl;
+  cout << endl << count << endl;
 
   for(i = 0; i < count; i++)
     queue.enqueue(children[i]);
