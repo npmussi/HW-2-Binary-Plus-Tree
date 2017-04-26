@@ -1,5 +1,5 @@
 #ifndef InternalNodeH
-  #define InternalNodeH
+#define InternalNodeH
 
 #include "BTreeNode.h"
 
@@ -11,10 +11,11 @@ private:
   int *keys;
   
   void regularInsert(int value);
+  void updateKeys(int index_num);
+  BTreeNode* pickInsert(void);
   void insertLeft(BTreeNode* returned_node);
   void insertRight(BTreeNode* returned_node);
   InternalNode* insertSplit(BTreeNode* returned_node);
-  bool isFull();
 public:
   InternalNode(int ISize, int LSize, InternalNode *p,
     BTreeNode *left, BTreeNode *right);
