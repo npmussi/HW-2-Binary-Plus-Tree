@@ -34,7 +34,7 @@ InternalNode* InternalNode::insert(int value)
 	if(count < internalSize)
 	{//No split occurs.
 		regularInsert(value);
-    }
+	}
     else
 	{
 	//in this case, count == internalSize, but this doesn't mean that we need to look to siblings yet
@@ -54,7 +54,7 @@ InternalNode* InternalNode::insert(int value)
 		returned_node = children[count - 1]->insert(value);
 		keys[count - 1] = children[count - 1]->getMinimum(); //TODO Update keys[count - 2] to acccount for sending to left sibling
 		return pickInsert(returned_node);
-    }
+    	}
     return NULL;//PLACEHOLDER
 } // InternalNode::insert()
 
