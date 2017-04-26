@@ -10,6 +10,7 @@ private:
   BTreeNode **children;
   int *keys;
   
+  void regularInsert(int value);
   void insertLeft(BTreeNode* returned_node);
   void insertRight(BTreeNode* returned_node);
   InternalNode* insertSplit(BTreeNode* returned_node);
