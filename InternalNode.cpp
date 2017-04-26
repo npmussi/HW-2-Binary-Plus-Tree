@@ -15,14 +15,14 @@ int InternalNode::getMinimum()const
 	if(count > 0)   // should always be the case
 		return children[0]->getMinimum();
 	else
-		return 0;
+		return children[99]->getMinimum();
 } // InternalNode::getMinimum()
 
 
 //FIXME: 1. Look for updating left and right sibling keys (in case of putting values into left and right siblings)
 //    ^^ NEED TO MAKE SURE IT UPDATES FOR ALL CASES, ex. BTree12.dat 2 2 will break because it goes sends child right, and doesn't update
 //FIXME: 2. somehow there was an empty internal node in the final answer, the rest of the internals were also screwed up
-// 	 ^^ make sure that parent / child pointers are right
+// ^^ make sure that parent / child pointers are right
 
 InternalNode* InternalNode::insert(int value)
 {
@@ -41,13 +41,21 @@ InternalNode* InternalNode::insert(int value)
 	//we only should start looking to siblings when the leaf splits
 	//go through the children array, check children near the value being inserted
 		BTreeNode* returned_node = NULL;
-		unsigned int index_num = 0;
-		while (index_num < (count-1) && value < keys[index_num++]);//Increments index number until we find the correct position.
-		returned_node = children[index_num]->insert(value);//Recursive call.
-		updateKeys(index_num);
+		for(int i = 0; i < count - 1; i++)
+		{
+			if(value < keys[i + 1])
+			{
+				returned_node = children[i]->insert(value);//Recursive call.
+				updateKeys(i);
+				return pickInsert(returned_node);
+			}
+		}
+		//if you got out here, that means that we need to insert into the last child
+		returned_node = children[count - 1]->insert(value);
+		keys[count - 1] = children[count - 1]->getMinimum(); //TODO Update keys[count - 2] to acccount for sending to left sibling
 		return pickInsert(returned_node);
-	}
-    return NULL;
+    }
+    return NULL;//PLACEHOLDER
 } // InternalNode::insert()
 
 
@@ -103,7 +111,7 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
 	*/
 {
 	InternalNode *new_internal = new InternalNode(internalSize, leafSize, this->parent, this, this->getRightSibling());
-	int starting_index;
+	unsigned int starting_index;
 	if(this->rightSibling != NULL)
 	{
 		//I must make the old right sibling know who his new left is
@@ -111,12 +119,12 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
 	}
 	this->setRightSibling(new_internal);
 	
-	//Compare value to middle. If less than middle (insert left), shift more elems right. Vice versa otherwise.
-	starting_index = (returned_node->getMinimum() < this->keys[internalSize/2]) ? (internalSize-1)/2 : (internalSize+1)/2;
+	starting_index = ((returned_node->getMinimum() < this->keys[internalSize/2]) ? (internalSize-1)/2 : (internalSize+1)/2);
 	
-	for (int elem_num = starting_index; elem_num < internalSize; elem_num++)//The +1 guarantees that if count is odd, one more element is in the left sibling.
+	for (unsigned int elem_num = starting_index; elem_num < internalSize; elem_num++)//The +1 guarantees that if count is odd, one more element is in the left sibling.
 	{
-		new_internal->insert(this->children[elem_num]); //Put our elements in the new internal node.
+		//cout << "moving time, start: " << starting_index << "elem_num: " << elem_num << endl;
+		new_internal->insert(this->children[elem_num]); //Put our elements in the new internal node
 		count--;//We now have less.
 	}
 
@@ -129,7 +137,7 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
 		new_internal->insert(returned_node->getRightSibling());//because the internal node only splits when there is one too many leaves
 	}
 	
-	if (new_internal->children[0]->getLeftSibling() != NULL) //Leftmost nodes shouldn't have siblings.
+	if (new_internal->children[0]->getLeftSibling() != NULL)
 	{
 		new_internal->children[0]->getLeftSibling()->setRightSibling(NULL);
 	}
@@ -140,6 +148,10 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
 }
 
 void InternalNode::regularInsert(int value)
+	/*Does a normal insert of a value into
+	 *a non-empty node. Since this does not
+	 *split, nothing is returned.
+	 */
 {
 	BTreeNode *returned_node = NULL;
 	int& num_keys = count;
