@@ -15,7 +15,7 @@ int InternalNode::getMinimum()const
 	if(count > 0)   // should always be the case
 		return children[0]->getMinimum();
 	else
-		return 0;
+		return children[99]->getMinimum();
 } // InternalNode::getMinimum()
 
 
@@ -30,14 +30,11 @@ InternalNode* InternalNode::insert(int value)
         and return the node gone to   
         if the internal node is empty,
         creates keys[0] and insert*/
-    //What is this is an InternalNode with a bunch of LeafNodes in regards to the return?
-    //^ it will be a recursive function, recursively call insert(int) until the child is a leaf
-
 
 	if(count < internalSize)
-	{
+	{//No split occurs.
 		regularInsert(value);
-	}
+    }
     else
 	{
 	//in this case, count == internalSize, but this doesn't mean that we need to look to siblings yet
@@ -48,57 +45,16 @@ InternalNode* InternalNode::insert(int value)
 		{
 			if(value < keys[i + 1])
 			{
-				returned_node = children[i]->insert(value);
-				keys[i] = children[i]->getMinimum();
-				std::cout << "right before" <<endl;
-				keys[i + 1] = children[i + 1]->getMinimum(); //update the right in case of right send
-				
-				if(children[i]->getLeftSibling() != NULL)
-				{ // FIXME: this doesn't always work, you still have a left sibling at children[0] (if you're a right sibling of someone else)
-					keys[i - 1] = children[i]->getLeftSibling()->getMinimum(); //THIS WILL SEG FAULT if you have a left sibling and are the first item in children
-				}
-				if(children[i]->getRightSibling() != NULL){ // FIXME: DANGER SEG FAULT IN WAITING HERE
-					keys[i + 1] = children[i]->getRightSibling()->getMinimum();
-				}
-				if(returned_node != NULL){
-					//if the leaf split, I must start looking to my siblings
-					
-					if (NULL != this->leftSibling && this->leftSibling->getCount() < internalSize)//leftSib exists, not full
-	    			{ //insert into the left sibling
-	        			    insertLeft(returned_node);
-	    			}
-	    			else if (NULL != this->rightSibling && this->rightSibling->getCount() < internalSize)//rightSib exists, not full
-	    			{ //insert into the right sibling
-	    			        insertRight(returned_node);
-	    			}
-	    			else{ //I must split
-	    			     return insertSplit(returned_node); //Returns itself because the parent needs to know that it has split.
-	    			}
-				}
-				return NULL;
+				returned_node = children[i]->insert(value);//Recursive call.
+				updateKeys(i);
+				return pickInsert();
 			}
 		}
 		//if you got out here, that means that we need to insert into the last child
 		returned_node = children[count - 1]->insert(value);
 		keys[count - 1] = children[count - 1]->getMinimum(); //TODO Update keys[count - 2] to acccount for sending to left sibling
 
-		if(returned_node != NULL){
-			//I must look to my siblings
-			
-			if (NULL != this->leftSibling && this->leftSibling->getCount() < internalSize)//leftSib exists, not full
-	    	{ //insert into the left sibling
-				insertLeft(returned_node);
-	    	}
-	    	else if (NULL != this->rightSibling && this->rightSibling->getCount() < internalSize)//rightSib exists, not full
-	    	{ //insert into the right sibling
-	    	        insertRight(returned_node);
-	    	}
-	    	else{ //I must split
-//cout<< "im in split out for"<<endl;
-	    	     return insertSplit(returned_node); //Returns itself because the parent needs to know that it has split.
-	    	}
-		}
-		return NULL;
+		return pickInsert();
     }
     return NULL;//PLACEHOLDER
 } // InternalNode::insert()
@@ -161,8 +117,8 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
 		//I must make the old right sibling know who his new left is
 		this->rightSibling->setLeftSibling(new_internal);
 	}
-	
 	this->setRightSibling(new_internal);
+	
 	if (returned_node->getMinimum() < this->keys[internalSize/2])//Compare value to middle.
 	{
 		starting_index = (internalSize-1)/2;//If less than middle (insert left), shift more elems right.
@@ -187,14 +143,22 @@ InternalNode* InternalNode::insertSplit(BTreeNode* returned_node)
 	{
 		new_internal->insert(returned_node->getRightSibling());//because the internal node only splits when there is one too many leaves
 	}
-
-	new_internal->children[0]->getLeftSibling()->setRightSibling(NULL);
+	
+	if (new_internal->children[0]->getLeftSibling != NULL)
+	{
+		new_internal->children[0]->getLeftSibling()->setRightSibling(NULL);
+	}
+	
 	new_internal->children[0]->setLeftSibling(NULL);
 	//THIS WILL ALWAYS APPLY: there will always be a leaf that is past the old "max"  
 	return this; //If we return a pointer to an internal node, that means we need a new parent in every case.
 }
 
 void InternalNode::regularInsert(int value)
+	/*Does a normal insert of a value into
+	 *a non-empty node. Since this does not
+	 *split, nothing is returned.
+	 */
 {
 	BTreeNode *returned_node = NULL;
 	int& num_keys = count;
@@ -218,9 +182,9 @@ void InternalNode::regularInsert(int value)
 				while (back_index > index_num)
 				{
 					//std::cout << "back_index: " << back_index << "index_num: " << index_num<< std::endl;
-					children[back_index + 1] = children[back_index]; //Move right!
+					children[back_index + 1] = children[back_index]; //Move right starting from back.
 					keys[back_index + 1] = children[back_index]->getMinimum();
-					back_index--; // we should decrement here because I have to change keys array                    
+					back_index--;                   
 					// SET LEFT AND RIGHT SIBLI- wait, nevermind, they're all the same still.
 				}
 				this->count++;
@@ -260,4 +224,51 @@ void InternalNode::insertRight(BTreeNode* returned_node)
 	//this method will insert the child into the right sibling
 	((InternalNode*)(this->rightSibling))->insert(this->children[--count]);  //Well, we just don't care about the last element.
 	this->insert(returned_node->getRightSibling());
+}
+
+void InternalNode::updateKeys(int index_num)
+{
+	/*Updates the keys of a node that are at
+	 *or around a certain index value.
+	 */
+	 
+	keys[index_num] = children[index_num]->getMinimum();
+	std::cout << "right before" <<endl;
+	keys[index_num + 1] = children[index_num + 1]->getMinimum(); //update the right in case of right send
+	
+	if(children[index_num]->getLeftSibling() != NULL && children[index_num]->getLeftSibling()->getParent() == children[index_num]->getParent())
+	{ // Shouldn't be able to seg fault.
+		keys[index_num - 1] = children[index_num]->getLeftSibling()->getMinimum(); //THIS WILL SEG FAULT if you have a left sibling and are the first item in children
+	}
+	
+	if(children[index_num]->getRightSibling() != NULL && children[index_num]->getRightSibling()->getParent() == children[index_num]->getParent())
+	{ // Shouldn't be able to seg fault.
+		keys[index_num + 1] = children[index_num]->getRightSibling()->getMinimum();
+	}
+}
+
+BTreeNode* InternalNode::pickInsert(void)
+{
+	/*Decides where to put a node after
+	 *it has split. Looks left first or
+	 *ultimately splits. This assumes that
+	 *the calling internal node is full.
+	*/
+	if(returned_node != NULL)
+	{
+		//if the leaf split, I must start looking to my siblings
+		if (NULL != this->leftSibling && this->leftSibling->getCount() < internalSize)//leftSib exists, not full
+		{ //insert into the left sibling
+			insertLeft(returned_node);
+		}
+		else if (NULL != this->rightSibling && this->rightSibling->getCount() < internalSize)//rightSib exists, not full
+		{ //insert into the right sibling
+			insertRight(returned_node);
+		}
+		else
+		{ //I must split
+			return insertSplit(returned_node); //Returns itself because the parent needs to know that it has split.
+		}
+	}
+	return NULL;
 }
