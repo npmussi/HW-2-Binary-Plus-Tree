@@ -1,0 +1,20 @@
+Leaf: 1 8 
+Leaf: 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 
+Leaf: 37 40 44 47 
+Leaf: 53 54 
+Leaf: 56 57 65 
+Leaf: 67 69 80 81 
+Internal: 1 27 53 
+Internal: 1 9 13 
+Internal: 27 37 
+Internal: 53 56 67 
+Leaf: 1 8 
+Leaf: 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 
+Leaf: 37 40 44 47 
+Leaf: 53 54 
+Leaf: 56 57 65 
+Leaf: 67 69 80 81 

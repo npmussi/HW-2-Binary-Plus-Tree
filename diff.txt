@@ -1,0 +1,42 @@
+1,10c1
+< Internal: 37 56 
+< Internal: 1 18 
+< Internal: 37 
+< Internal: 56 67 
+< Leaf: 1 8 9 10 12 13 
+< Leaf: 18 22 24 27 30 35 
+< Leaf: 37 40 44 47 53 54 
+< Leaf: 56 57 65 
+< Leaf: 67 69 80 81 
+< Internal: 1 37 
+---
+> Internal: 13 40 
+12,20c3,20
+< Internal: 37 56 
+< Internal: 1 18 
+< Internal: 37 
+< Internal: 56 67 
+< Leaf: 1 8 9 10 12 13 
+< Leaf: 18 22 24 27 30 35 
+< Leaf: 37 40 44 47 53 54 
+< Leaf: 56 57 65 
+< Leaf: 67 69 80 81 
+---
+> Internal: 13 27 
+> Internal: 40 57 
+> Leaf: 1 8 9 10 12 
+> Leaf: 13 18 22 24 
+> Leaf: 27 30 35 37 
+> Leaf: 40 44 47 53 54 56 
+> Leaf: 57 65 67 69 80 81 
+> Internal: 1 13 
+> Internal: 1 
+> Internal: 13 40 
+> Internal: 1 
+> Internal: 13 27 
+> Internal: 40 57 
+> Leaf: 1 8 9 10 12 
+> Leaf: 13 18 22 24 
+> Leaf: 27 30 35 37 
+> Leaf: 40 44 47 53 54 56 
+> Leaf: 57 65 67 69 80 81 

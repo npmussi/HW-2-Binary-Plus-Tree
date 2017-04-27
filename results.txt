@@ -1,0 +1,163 @@
+Scores from p2 for Sun,James Mussi,Nicola 
+
+Note that the format for authors.csv is: e-mail<comma>last name<comma>first name
+For example: ssdavis@ucdavis.edu,Davis,Sean
+
+Addresses used: jfsun@ucdavis.edu npmussi@ucdavis.edu  
+BTree1.dat 3 4:
+OK
+ 
+BTree2.dat 3 4:
+OK
+  
+BTree5.dat 3 4:
+OK
+ 
+BTree12.dat 3 4:
+OK
+ 
+BTree25.dat 3 4:
+Yours: 
+Leaf: 1 8 
+Leaf: 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 
+Leaf: 37 40 44 47 
+Leaf: 53 54 
+Leaf: 56 57 65 
+Leaf: 67 69 80 81 
+Internal: 1 27 53 
+Internal: 1 9 13 
+Internal: 27 37 
+Internal: 53 56 67 
+Leaf: 1 8 
+Leaf: 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 
+Leaf: 37 40 44 47 
+Leaf: 53 54 
+Leaf: 56 57 65 
+Leaf: 67 69 80 81 
+
+Sean's: 
+Internal: 13 27 
+Internal: 40 54 67 
+Leaf: 1 8 
+Leaf: 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 37 
+Leaf: 40 44 47 53 
+Leaf: 54 56 57 65 
+Leaf: 67 69 80 81 
+Internal: 1 13 40 
+Internal: 1 9 
+Internal: 13 27 
+Internal: 40 54 67 
+Leaf: 1 8 
+Leaf: 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 37 
+Leaf: 40 44 47 53 
+Leaf: 54 56 57 65 
+Leaf: 67 69 80 81 
+ 
+BTree5.dat 5 2:
+OK
+ 
+BTree12.dat 5 2:
+OK
+ 
+BTree25.dat 5 2:
+Yours: 
+Leaf: 67 69 
+Leaf: 80 81 
+Internal: 1 27 56 
+Internal: 1 8 10 13 22 
+Internal: 27 35 40 47 54 
+Internal: 56 57 67 80 
+Leaf: 1 
+Leaf: 8 9 
+Leaf: 10 12 
+Leaf: 13 18 
+Leaf: 22 24 
+Leaf: 27 30 
+Leaf: 35 37 
+Leaf: 40 44 
+Leaf: 47 53 
+Leaf: 54 
+Leaf: 56 
+Leaf: 57 65 
+Leaf: 67 69 
+Leaf: 80 81 
+
+Sean's: 
+Leaf: 57 65 
+Leaf: 67 69 
+Leaf: 80 81 
+Internal: 1 27 47 
+Internal: 1 8 10 13 22 
+Internal: 27 35 40 
+Internal: 47 54 57 67 80 
+Leaf: 1 
+Leaf: 8 9 
+Leaf: 10 12 
+Leaf: 13 18 
+Leaf: 22 24 
+Leaf: 27 30 
+Leaf: 35 37 
+Leaf: 40 44 
+Leaf: 47 53 
+Leaf: 54 56 
+Leaf: 57 65 
+Leaf: 67 69 
+Leaf: 80 81 
+ 
+BTree12.dat 2 6:
+OK
+ 
+BTree25.dat 2 6:
+Yours: 
+Internal: 13 40 
+Internal: 1 
+Internal: 13 27 
+Internal: 40 57 
+Leaf: 1 8 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 37 
+Leaf: 40 44 47 53 54 56 
+Leaf: 57 65 67 69 80 81 
+Internal: 1 13 
+Internal: 1 
+Internal: 13 40 
+Internal: 1 
+Internal: 13 27 
+Internal: 40 57 
+Leaf: 1 8 9 10 12 
+Leaf: 13 18 22 24 
+Leaf: 27 30 35 37 
+Leaf: 40 44 47 53 54 56 
+Leaf: 57 65 67 69 80 81 
+
+Sean's: 
+Internal: 37 56 
+Internal: 1 18 
+Internal: 37 
+Internal: 56 67 
+Leaf: 1 8 9 10 12 13 
+Leaf: 18 22 24 27 30 35 
+Leaf: 37 40 44 47 53 54 
+Leaf: 56 57 65 
+Leaf: 67 69 80 81 
+Internal: 1 37 
+Internal: 1 
+Internal: 37 56 
+Internal: 1 18 
+Internal: 37 
+Internal: 56 67 
+Leaf: 1 8 9 10 12 13 
+Leaf: 18 22 24 27 30 35 
+Leaf: 37 40 44 47 53 54 
+Leaf: 56 57 65 
+Leaf: 67 69 80 81 
+ 
+Total score: 35
