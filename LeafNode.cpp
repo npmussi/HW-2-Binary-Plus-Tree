@@ -81,9 +81,14 @@ void LeafNode::insertLeft(int value)
 void LeafNode::insertRight(int value)
 {
     //this method will insert the value into the right sibling
-	this->rightSibling->insert(this->values[--count]);  //Well, we just don't care about the last element.
-	this->insert(value);
-	
+	if(value > this->values[count - 1]){
+		//if the value inserted is biggest, he goes right
+		this->rightSibling->insert(value);
+	}
+	else{
+		this->rightSibling->insert(this->values[--count]);  //Well, we just don't care about the last element.
+		this->insert(value);
+	}
 }
 
 LeafNode* LeafNode::insertSplit(int value)
@@ -93,10 +98,10 @@ LeafNode* LeafNode::insertSplit(int value)
 	    unsigned int starting_index;
 	    if(this->rightSibling != NULL){
 	        //I must make the old right sibling know who his new left is
-		this->rightSibling->setLeftSibling(new_leaf);
+		this->getRightSibling()->setLeftSibling(new_leaf);
 	    }
 	    this->setRightSibling(new_leaf);
-	    if (value < this->values[leafSize/2])//Compare value to middle.
+	    if (value < this->values[(leafSize - 1)/2])//Compare value to middle.
 	    {
 	        starting_index = (leafSize-1)/2;//If less than middle (insert left), shift more elems right.
 	    }
